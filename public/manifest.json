@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Kerf Adjuster",
+  "name": "Kerf Adjuster for Laser Cutter Files",
   "icons": [
     {
       "src": "favicon.ico",
