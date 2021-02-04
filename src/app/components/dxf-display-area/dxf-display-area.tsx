@@ -1,5 +1,5 @@
 import React, {createRef, FC, ReactElement, RefObject, useEffect, useState} from "react";
-import "./file-viewing-pane.scss";
+import "./dxf-display-area.scss";
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 

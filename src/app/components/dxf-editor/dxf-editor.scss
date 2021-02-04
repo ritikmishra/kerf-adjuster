@@ -4,12 +4,13 @@
   color: black;
 
   padding: 1rem;
-  height: 25vh;
   width: clamp(16vw, 400px, 100vw);
 
   position: absolute;
   right: 20px;
+  height: calc(100% - 40px);
   margin-top: 20px;
+  margin-bottom: 20px;
 
   border-radius: 5px;
 

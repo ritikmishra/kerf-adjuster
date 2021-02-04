@@ -1,6 +1,6 @@
 import React, {ChangeEvent, FC, ReactElement, useState} from "react";
-import "./file-selector-pane.scss";
-import {DxfDisplayArea} from "../file-viewing-pane/dxf-display-area";
+import "./dxf-editor.scss";
+import {DxfDisplayArea} from "../dxf-display-area/dxf-display-area";
 
 
 export const DxfEditor: FC = (): ReactElement => {
