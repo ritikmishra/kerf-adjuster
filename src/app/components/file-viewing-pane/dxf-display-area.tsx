@@ -1,17 +1,17 @@
-import React, {createRef, ReactElement, RefObject, useEffect, useState} from "react";
+import React, {createRef, FC, ReactElement, RefObject, useEffect, useState} from "react";
 import "./file-viewing-pane.scss";
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
 class ThreeJsObjects {
     constructor(
-      public readonly scene: THREE.Scene,
-      public readonly camera: THREE.OrthographicCamera,
-      public readonly renderer: THREE.Renderer,
-      public readonly plane: THREE.Plane,
-      public readonly width: number,
-      public readonly height: number,
-      public readonly orbitControls: OrbitControls) {
+        public readonly scene: THREE.Scene,
+        public readonly camera: THREE.OrthographicCamera,
+        public readonly renderer: THREE.Renderer,
+        public readonly plane: THREE.Plane,
+        public readonly width: number,
+        public readonly height: number,
+        public readonly orbitControls: OrbitControls) {
     }
 
     render(): void {
@@ -48,16 +48,21 @@ const initThreeJs = (domRef: RefObject<HTMLDivElement>): ThreeJsObjects => {
     const ret = new ThreeJsObjects(scene, camera, renderer, plane, width, height, orbitControls);
 
     function animate() {
-        requestAnimationFrame( animate );
+        requestAnimationFrame(animate);
         ret.render();
     }
+
     animate();
 
     return ret;
     // === THREE.JS EXAMPLE CODE END ===
 };
 
-export const FileViewingPane = (): ReactElement => {
+interface FileViewingPaneProps {
+    fileBuffer: Buffer
+}
+
+export const DxfDisplayArea: FC<FileViewingPaneProps> = (props): ReactElement => {
     const paneRef = createRef<HTMLDivElement>();
     const [threeJsObjects, setThreeJsObjects] = useState<ThreeJsObjects>();
 

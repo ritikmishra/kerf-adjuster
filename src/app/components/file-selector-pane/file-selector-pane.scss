@@ -3,12 +3,15 @@
   background: whitesmoke;
   color: black;
 
+  padding: 1rem;
   height: 25vh;
-  width: 16vw;
+  width: clamp(16vw, 400px, 100vw);
 
   position: absolute;
   right: 20px;
   margin-top: 20px;
 
   border-radius: 5px;
+
+  z-index: 1000;
 }
