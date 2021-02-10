@@ -211,11 +211,12 @@ fn main() {
     // Group the contours with each other
     // TODO: handle unclosed contours
     while contours.len() > 0 {
-        'each_a: for (i, current_contour) in contours.clone().into_iter() {
+        'each_a: for (i, current_contour) in contours.iter() {
             loop {
-                for (j, other_contour) in contours.clone().into_iter() {
+                for (j, other_contour) in contours.iter() {
+                    let (i, j) = (*i, *j);
                     if i != j {
-                        if let Ok(combined) = current_contour.clone().combine_attempt(other_contour) {
+                        if let Ok(combined) = current_contour.clone().combine_attempt(other_contour.clone()) {
                             // We will combine other_contour into this_contour
                             // Remove other_contour from contours map
                             contours.remove(&j);
