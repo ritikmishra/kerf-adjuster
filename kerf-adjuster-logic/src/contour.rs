@@ -4,6 +4,7 @@ use dxf::Point;
 use dxf::Vector;
 use nalgebra::Vector3;
 
+/// This is a newtype that exists solely to convert nalgebra vectors to/from DXF crate counterparts
 struct VectorWrapper(Vector3<f64>);
 
 impl From<Vector> for VectorWrapper {
@@ -39,7 +40,7 @@ impl From<VectorWrapper> for Vector {
 }
 
 pub fn find_endpoints_of_entity(e: &Entity) -> Option<(Vector3<f64>, Vector3<f64>)> {
-    // TODO: real error handling for unsupported entities
+    // TODO: real error handling for unsupported entities - Result instead of Option
 
     match &e.specific {
         EntityType::Circle(_) => None, // Circles are their own contour
@@ -208,30 +209,7 @@ impl Contour {
         let mut new_entities = Vec::with_capacity(self.entities.len());
 
         for entity in self.entities.clone() {
-            let offset_entity = {
-                let offset_entity_specifics: EntityType = match entity.specific {
-                    EntityType::Circle(circle) => EntityType::Circle(Circle {
-                        radius: circle.radius + amount,
-                        ..circle
-                    }),
-                    EntityType::Arc(arc) => {
-                        // TODO: determine the correct direction to move the arc
-                        //
-                        EntityType::Arc(Arc {
-                            radius: arc.radius + amount,
-                            ..arc
-                        })
-                    }
-                    _ => return Err(()),
-                };
-
-                Entity {
-                    common: entity.common,
-                    specific: offset_entity_specifics,
-                }
-            };
-
-            new_entities.push(offset_entity);
+            new_entities.push(naive_entity_offset(entity, amount).ok_or(())?.0);
         }
 
         return Ok(Self {
@@ -239,6 +217,78 @@ impl Contour {
             end_points: None,
         });
     }
+}
+
+/// Returns either
+///     - A pair of entites that are offset_amount away from the provided entity
+///     - None, if the entity cannot be offset
+fn naive_entity_offset(entity: Entity, amount: f64) -> Option<(Entity, Entity)> {
+    let offset_entity_specifics: (EntityType, EntityType) = match entity.specific {
+        EntityType::Circle(circle) => (
+            EntityType::Circle(Circle {
+                radius: circle.radius + amount,
+                ..circle.clone()
+            }),
+            EntityType::Circle(Circle {
+                radius: circle.radius - amount,
+                ..circle
+            }),
+        ),
+        EntityType::Arc(arc) => (
+            EntityType::Arc(Arc {
+                radius: arc.radius + amount,
+                ..arc.clone()
+            }),
+            EntityType::Arc(Arc {
+                radius: arc.radius - amount,
+                ..arc
+            }),
+        ),
+        EntityType::Line(line) => {
+            let VectorWrapper(start_vec) = line.p1.clone().into();
+            let VectorWrapper(end_vec) = line.p2.clone().into();
+            let VectorWrapper(plane_normal) = line.extrusion_direction.clone().into();
+            let delta = end_vec - start_vec;
+            // The plane normal should be [0, 0, 1] & delta should be [x, y, 0] --> the perp delta should be [-y, x, 0]
+            let mut perpendicular_delta = delta.cross(&plane_normal);
+            perpendicular_delta.set_magnitude(amount);
+
+            let (new_start_1, new_end_1) = (
+                VectorWrapper(start_vec + perpendicular_delta),
+                VectorWrapper(end_vec + perpendicular_delta),
+            );
+
+            let (new_start_2, new_end_2) = (
+                VectorWrapper(start_vec - perpendicular_delta),
+                VectorWrapper(end_vec - perpendicular_delta),
+            );
+
+            (
+                EntityType::Line(Line {
+                    p1: new_start_1.into(),
+                    p2: new_end_1.into(),
+                    ..line.clone()
+                }),
+                EntityType::Line(Line {
+                    p1: new_start_2.into(),
+                    p2: new_end_2.into(),
+                    ..line
+                }),
+            )
+        }
+        _ => return None,
+    };
+
+    Some((
+        Entity {
+            common: entity.common.clone(),
+            specific: offset_entity_specifics.0,
+        },
+        Entity {
+            common: entity.common,
+            specific: offset_entity_specifics.1,
+        },
+    ))
 }
 
 pub trait ContourVecToDxf {
@@ -305,13 +355,17 @@ mod contour_test {
     #[test]
     pub fn test_contour_sequential_check_works() {
         // given: two entities that connect the way we want them to
-        let line1 = line_between(Point::origin(), Point::new(1., 2., 3.,));
+        let line1 = line_between(Point::origin(), Point::new(1., 2., 3.));
 
         let line2 = line_between(Point::new(1., 2., 3.), Point::new(4., 5., 6.));
 
         // when: we connect them in a contour
-        let contour_12 = Contour::from(line1.clone()).combine_attempt(line2.clone().into()).unwrap();
-        let contour_21 = Contour::from(line2.clone()).combine_attempt(line1.clone().into()).unwrap();
+        let contour_12 = Contour::from(line1.clone())
+            .combine_attempt(line2.clone().into())
+            .unwrap();
+        let contour_21 = Contour::from(line2.clone())
+            .combine_attempt(line1.clone().into())
+            .unwrap();
 
         // then: it passes the test
         check_contour_is_sequential(&contour_12).unwrap();

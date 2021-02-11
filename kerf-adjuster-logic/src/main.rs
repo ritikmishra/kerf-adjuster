@@ -38,7 +38,10 @@ fn main() {
         contours.iter().for_each(|(i, contour)| {
             print!("{}: ", i);
             if let Some(ref endpoints) = contour.end_points {
-                print!("(({:0.4}, {:0.4}), ({:0.4}, {:0.4})): ", endpoints.0.x, endpoints.0.y, endpoints.1.x, endpoints.1.y);
+                print!(
+                    "(({:0.4}, {:0.4}), ({:0.4}, {:0.4})): ",
+                    endpoints.0.x, endpoints.0.y, endpoints.1.x, endpoints.1.y
+                );
             } else {
                 print!("closed: ")
             }
@@ -83,9 +86,10 @@ fn main() {
         println!("\n#######\n");
     }
 
+    // test offsetting contours
     let new_drawing = finished_contours
         .into_iter()
-        .map(|(_, c)| c)
+        .map(|(_, c)| c.offset_contour(0.3).unwrap_or(c))
         .collect::<Vec<_>>()
         .to_dxf();
     new_drawing.save_file("./tester.dxf");
