@@ -4,6 +4,7 @@ use dxf::Drawing;
 use dxf::{Point, Vector};
 use nalgebra::Vector3;
 use std::collections::HashMap;
+use std::default::Default;
 
 struct VectorWrapper(Vector3<f64>);
 
@@ -185,6 +186,19 @@ impl Contour {
     }
 }
 
+
+trait ContourVecToDxf {
+    fn to_dxf(self) -> Drawing;
+}
+
+impl ContourVecToDxf for Vec<Contour> {
+    fn to_dxf(self) -> dxf::Drawing {
+        let mut drawing: Drawing = Default::default();
+
+        todo!();
+    }
+}
+
 fn main() {
     // Load DXF
     let drawing =
@@ -192,13 +206,14 @@ fn main() {
 
     println!(
         "There are {} entities in the drawing",
-        drawing.entities().count()
+        drawing.entities.len()
     );
 
     // Convert each DXF entity (arc, circle, text, etc) into a "Contour" which can be more easily manipulated by us
     let contours = drawing
-        .entities()
-        .cloned()
+        .entities
+        .clone()
+        .into_iter()
         .map(Contour::create_from_entity)
         .collect::<Vec<_>>();
 
