@@ -5,6 +5,8 @@ use std::collections::HashMap;
 mod contour;
 use crate::contour::*;
 
+mod errors;
+
 fn main() {
     // Load DXF
     let drawing =

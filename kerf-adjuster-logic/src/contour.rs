@@ -1,3 +1,4 @@
+use crate::errors::{KerfAdjustmentError, KerfAdjustmentErrorReason};
 use dxf::entities::*;
 use dxf::Drawing;
 use dxf::Point;
@@ -201,21 +202,50 @@ impl Contour {
     }
 
     /// Negative amount will shrink the area of the contour. Positive amount will grow the area of the contour.
-    pub fn offset_contour(&self, amount: f64) -> Result<Self, ()> {
+    pub fn offset_contour(&self, amount: f64) -> Result<Self, KerfAdjustmentError> {
         if self.is_open() {
-            return Err(());
+            return Err(KerfAdjustmentError {
+                reason: KerfAdjustmentErrorReason::CannotOffsetOpenContour,
+            });
         }
 
-        let mut new_entities = Vec::with_capacity(self.entities.len());
+        let mut entities_iterator = self.entities.clone().into_iter();
 
-        for entity in self.entities.clone() {
-            new_entities.push(naive_entity_offset(entity, amount).ok_or(())?.0);
+        let first_entity = entities_iterator.next().ok_or(KerfAdjustmentError {
+            reason: KerfAdjustmentErrorReason::CannotOffsetEmptyContour,
+        })?;
+
+        // Create a contour and put the first entity (offset, of) into it
+        let mut result_contour: Contour = naive_entity_offset(first_entity.clone(), amount)
+            .ok_or(KerfAdjustmentError {
+                reason: KerfAdjustmentErrorReason::CannotOffsetEntity(first_entity.specific),
+            })?
+            .0 // TODO: handle both the inside and outside contours
+            .into();
+
+        for entity in entities_iterator {
+            // Offset the entity, get 2 offset versions
+            let (offset_a, offset_b) =
+                naive_entity_offset(entity.clone(), amount).ok_or(KerfAdjustmentError {
+                    reason: KerfAdjustmentErrorReason::CannotOffsetEntity(entity.specific),
+                })?;
+
+            // Try to connect one or the other to the
+            let maybe_combined_offset_contour_into_result = result_contour
+                .combine_attempt(offset_a.into())
+                .or_else(|(result_contour, _)| result_contour.combine_attempt(offset_b.into()));
+
+            match maybe_combined_offset_contour_into_result {
+                Ok(success) => result_contour = success,
+                Err(_) => {
+                    return Err(KerfAdjustmentError {
+                        reason: KerfAdjustmentErrorReason::CannotConnectContourAfterAdjustment,
+                    })
+                }
+            }
         }
 
-        return Ok(Self {
-            entities: new_entities,
-            end_points: None,
-        });
+        return Ok(result_contour);
     }
 }
 
@@ -314,7 +344,6 @@ mod contour_test {
     use dxf::entities::*;
     use dxf::Point;
     use dxf::Vector;
-    use nalgebra::Vector3;
 
     const EPSILON: f64 = 1e-6;
 
