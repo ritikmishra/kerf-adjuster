@@ -339,8 +339,8 @@ impl ContourVecToDxf for Vec<Contour> {
 #[cfg(test)]
 mod contour_test {
 
-    use crate::find_endpoints_of_entity;
-    use crate::Contour;
+    use crate::contour::find_endpoints_of_entity;
+    use crate::contour::Contour;
     use dxf::entities::*;
     use dxf::Point;
     use dxf::Vector;

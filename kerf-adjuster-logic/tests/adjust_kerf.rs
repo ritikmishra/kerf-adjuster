@@ -1,16 +1,15 @@
-use dxf;
+use kerfadjusterlogic::contour::ContourVecToDxf;
+use kerfadjusterlogic::contour::find_endpoints_of_entity;
+use kerfadjusterlogic::contour::Contour;
 use dxf::Drawing;
 use std::collections::HashMap;
 
-mod contour;
-use crate::contour::*;
 
-mod errors;
-
+#[test]
 fn main() {
     // Load DXF
     let drawing =
-        Drawing::load_file("/home/ritik/codeday_workspace/kerf-adjust/example_dxf.DXF").unwrap();
+        Drawing::load_file("../example_dxf.DXF").unwrap();
 
     println!(
         "There are {} entities in the drawing",

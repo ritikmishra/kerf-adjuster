@@ -1,11 +1,33 @@
 [package]
-name = "kerf-adjuster-logic"
+name = "kerfadjusterlogic"
 version = "0.1.0"
 authors = ["Ritik Mishra <ritik.mishra314@gmail.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[profile.release]
+lto = true
+
 
 [dependencies]
 dxf = "0.4"
 nalgebra = "0.24"
+wasm-bindgen = "0.2.45"
+getrandom = { features = ["js"] }
+uuid = { features = ["wasm-bindgen"] }
+
+[dependencies.web-sys]
+version = "0.3.22"
+features = ["console"]
+
+[target."cfg(debug_assertions)".dependencies]
+console_error_panic_hook= "0.1.5"
+
+[dev-dependencies]
+wasm-bindgen-test = "0.2.45"
+futures = "0.1.27"
+js-sys = "0.3.22"
+wasm-bindgen-futures = "0.3.22"
