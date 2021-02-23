@@ -1,8 +1,8 @@
 use wasm_bindgen::prelude::*;
 
-use std::collections::HashMap;
+use console_error_panic_hook;
+use std::{collections::HashMap, io::{BufWriter, Write}};
 use dxf::Drawing;
-use std::fs::File;
 use std::io::BufReader;
 pub mod contour;
 use contour::{Contour, ContourVecToDxf};
@@ -73,7 +73,18 @@ pub fn offset_drawing(drawing_bytes: &[u8], offset_amount: f64) -> Vec<u8> {
         .collect::<Vec<_>>()
         .to_dxf();
 
-    let mut ret = Vec::new();
-    new_drawing.save(&mut ret);
-    return ret;
+    let mut ret = BufWriter::new(Vec::new());
+
+    // there's some kind of WASM related problem with the regular save method?? 
+    new_drawing.save_dxb(&mut ret).unwrap();
+
+    ret.flush().unwrap_throw();
+
+    return ret.into_inner().unwrap_throw();
+}
+
+#[wasm_bindgen]
+pub fn multiply_nums(a: f64, b: f64) -> f64 {
+    console_error_panic_hook::set_once();
+    return a * b;
 }
