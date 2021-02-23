@@ -7088,9 +7088,6 @@ jsprim@^1.2.2:
     array-includes "^3.1.2"
     object.assign "^4.1.2"
 
-"kerfadjusterlogic@file:./kerf-adjuster-logic/pkg":
-  version "0.1.0"
-
 "kerfadjusterlogic@link:./kerf-adjuster-logic/pkg":
   version "0.0.0"
   uid ""
