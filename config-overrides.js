@@ -1,4 +1,6 @@
+/* eslint-disable */
 const path = require('path');
+const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
 
 module.exports = function override(config, env) {
   const wasmExtensionRegExp = /\.wasm$/;
@@ -14,12 +16,10 @@ module.exports = function override(config, env) {
     });
   });
 
-  // Add a dedicated loader for WASM
-  config.module.rules.push({
-    test: wasmExtensionRegExp,
-    include: path.resolve(__dirname, 'src'),
-    use: [{ loader: require.resolve('wasm-loader'), options: {} }]
-  });
+  // Use wasm pack plugin
+  config.plugins.push(new WasmPackPlugin({
+    crateDirectory: path.resolve(__dirname, "kerf-adjuster-logic"),
+  }));
 
   return config;
 };
