@@ -8,9 +8,15 @@ edition = "2018"
 [lib]
 crate-type = ["cdylib", "lib"]
 
+# [features]
+# default = ["wee_alloc"]
+
 [profile.release]
 lto = true
+opt-level = "s"
 
+[profile.dev]
+debug = true
 
 [dependencies]
 dxf = "0.4"
