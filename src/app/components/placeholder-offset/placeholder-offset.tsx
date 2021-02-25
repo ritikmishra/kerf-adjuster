@@ -3,13 +3,6 @@ import { FilePicker } from "../dxf-editor/dxf-editor";
 import "./placeholder-offset.scss";
 
 
-// TODO: delete this testing logic
-import("kerfadjusterlogic").then((mod) => {
-    console.log("module successfully imported;");
-    console.log("let's multiply two nums");
-    console.log(mod.multiply_nums(1, 3));
-    console.log(mod.offset_drawing(Buffer.from("not dxf"), 10));
-});
 
 export const PlaceholderOffsetUI: React.FC = () => {
 

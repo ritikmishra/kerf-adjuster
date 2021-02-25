@@ -1,9 +1,11 @@
 use wasm_bindgen::prelude::*;
 
 use console_error_panic_hook;
-use std::{collections::HashMap, io::{BufWriter, Write}};
 use dxf::Drawing;
 use std::io::BufReader;
+use std::{
+    collections::HashMap,
+};
 pub mod contour;
 use contour::{Contour, ContourVecToDxf};
 pub mod errors;
@@ -66,21 +68,18 @@ pub fn offset_drawing(drawing_bytes: &[u8], offset_amount: f64) -> Vec<u8> {
     let mut bufreader = BufReader::new(drawing_bytes);
     let drawing = Drawing::load(&mut bufreader).unwrap();
     let drawing_contours = drawing_to_contours(drawing);
-    // test offsetting contours
+
+    // offset the contours
     let new_drawing = drawing_contours
         .into_iter()
-        .map(|(_, c)| c.offset_contour(0.3).unwrap_or(c))
+        .map(|(_, c)| c.offset_contour(offset_amount).unwrap_or(c))
         .collect::<Vec<_>>()
         .to_dxf();
 
-    let mut ret = BufWriter::new(Vec::new());
-
-    // there's some kind of WASM related problem with the regular save method?? 
-    new_drawing.save_dxb(&mut ret).unwrap();
-
-    ret.flush().unwrap_throw();
-
-    return ret.into_inner().unwrap_throw();
+    // return the new dxf
+    let mut ret = Vec::new();
+    new_drawing.save(&mut ret).unwrap();
+    return ret;
 }
 
 #[wasm_bindgen]
