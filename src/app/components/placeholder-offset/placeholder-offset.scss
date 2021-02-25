@@ -2,11 +2,15 @@
 .content {
     display: flex;
     flex-direction: column;
-    width: 60vw;
+    width: calc(max(30vw, min(600px, 90vw)));
+    margin-top: 1rem;
     margin-left: auto;
     margin-right: auto;
 }
 
-.centered {
-    align-self: center;
+.dxf-offset-form {
+    margin: 5rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

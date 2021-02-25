@@ -3,18 +3,18 @@ import "./dxf-editor.scss";
 import { DxfDisplayArea } from "../dxf-display-area/dxf-display-area";
 
 interface FilePickerProps {
-    onNewFile: (fileContents: Buffer) => unknown
+    onNewFile: (fileContents: Buffer, fileName: string) => unknown
 }
 
 export const FilePicker: FC<FilePickerProps> = ({ onNewFile }: FilePickerProps) => {
     const handleFileChange = async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
         const files = event.target.files;
         if (files && files.length > 0) {
-            const file = files[0];
+            const file: File = files[0];
             const fileContents = await file.arrayBuffer();
             const fileBuffer = Buffer.alloc(fileContents.byteLength);
             fileBuffer.fill(new Uint8Array(fileContents));
-            onNewFile(fileBuffer);
+            onNewFile(fileBuffer, file.name);
         } else {
             alert("You have to pick a file!");
         }
