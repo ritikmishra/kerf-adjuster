@@ -1,5 +1,7 @@
 # kerf-adjust
 
+[See it in action](https://ritikmishra.github.io/kerf-adjuster)
+
 This is going to be a web application where you can upload a DXF into your web browser and offset contours
 in order to adjust for the kerf of your laser.
 

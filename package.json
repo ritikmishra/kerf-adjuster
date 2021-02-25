@@ -1,5 +1,6 @@
 {
   "name": "kerf-adjust",
+  "homepage": "https://ritikmishra.github.io/kerf-adjuster",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -23,6 +24,8 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
+    "predeploy": "react-app-rewired build",
+    "deploy": "gh-pages -d build",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
   },
@@ -46,6 +49,7 @@
     "@typescript-eslint/parser": "^4.4.0",
     "@wasm-tool/wasm-pack-plugin": "^1.3.3",
     "eslint-plugin-react": "^7.21.4",
+    "gh-pages": "^3.1.0",
     "react-app-rewired": "^2.1.8"
   }
 }
