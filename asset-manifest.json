@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/kerf-adjuster/static/css/main.c77240fb.chunk.css",
-    "main.js": "/kerf-adjuster/static/js/main.229347e0.chunk.js",
-    "main.js.map": "/kerf-adjuster/static/js/main.229347e0.chunk.js.map",
+    "main.js": "/kerf-adjuster/static/js/main.eb028fa7.chunk.js",
+    "main.js.map": "/kerf-adjuster/static/js/main.eb028fa7.chunk.js.map",
     "runtime-main.js": "/kerf-adjuster/static/js/runtime-main.71d14281.js",
     "runtime-main.js.map": "/kerf-adjuster/static/js/runtime-main.71d14281.js.map",
     "static/css/2.d470c34f.chunk.css": "/kerf-adjuster/static/css/2.d470c34f.chunk.css",
@@ -21,6 +21,6 @@
     "static/css/2.d470c34f.chunk.css",
     "static/js/2.58944296.chunk.js",
     "static/css/main.c77240fb.chunk.css",
-    "static/js/main.229347e0.chunk.js"
+    "static/js/main.eb028fa7.chunk.js"
   ]
 }
