@@ -26,7 +26,7 @@ export const PlaceholderOffsetUI: React.FC = () => {
         download_link.setAttribute("href", new_drawing_data_uri);
 
         // make it download the file when opened
-        const newFileName = file.fileName.replace(/.dxf/ig, "-offset.dxf");
+        const newFileName = `${file.fileName.replace(/.dxf$/ig, "")}-offset.dxf`;
         download_link.setAttribute("download", newFileName);
         download_link.innerHTML = "Click this link to download the offset DXF";
 
