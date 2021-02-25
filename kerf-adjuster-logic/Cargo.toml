@@ -11,12 +11,19 @@ crate-type = ["cdylib", "lib"]
 # [features]
 # default = ["wee_alloc"]
 
+[profile.dev]
+# One of the generated functions in dxf crate is 1000 lines 
+# Unoptimized, it uses over 50k WASM locals when compiled
+# This throws an error in wasm-pack.
+# As a result, we need a little optimization to make it not break.
+opt-level = 1
+
+# incremental makes it go wayy faster when developing with webpack
+incremental = true
+
 [profile.release]
 lto = true
-opt-level = "s"
-
-[profile.dev]
-debug = true
+opt-level = "z"
 
 [dependencies]
 dxf = "0.4"
