@@ -1,5 +1,5 @@
 import React, {createRef, FC, ReactElement, RefObject, useEffect, useState} from "react";
-import "./dxf-display-area.scss";
+import styles from "./dxf-display-area.module.scss";
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
@@ -103,7 +103,7 @@ export const DxfDisplayArea: FC<FileViewingPaneProps> = (props): ReactElement =>
 
     return (
         <div
-            className="pane"
+            className={styles.pane}
             ref={paneRef}
         />
     );

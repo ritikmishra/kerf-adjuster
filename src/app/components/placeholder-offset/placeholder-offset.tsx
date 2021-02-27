@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import { FilePicker } from "../dxf-editor/dxf-editor";
-import "./placeholder-offset.scss";
+import styles from "./placeholder-offset.module.scss";
 
 
 
@@ -39,7 +39,7 @@ export const PlaceholderOffsetUI: React.FC = () => {
     };
 
     return (
-        <div className="content">
+        <div className={styles.content}>
             <p>
                 This is a web application that is supposed to kerf adjust your DXF files for the purposes of laser cutting.
 
@@ -47,7 +47,7 @@ export const PlaceholderOffsetUI: React.FC = () => {
                 problems are that not all geometries can be offset, and not all geometries will be offset in the right direction.
                 Regardless, you can try to put your DXF through it and you can see what comes out.
             </p>
-            <div className="dxf-offset-form">
+            <div className={styles.dxf_offset_form}>
                 <FilePicker onNewFile={(file, fileName) => setFile({ file, fileName })} />
                 <label>
                     Amount to offset curves by:
@@ -55,15 +55,16 @@ export const PlaceholderOffsetUI: React.FC = () => {
                 </label>
                 <Button variant="success" disabled={file === undefined} onClick={downloadFile}>Download offset DXF</Button>
             </div>
-            <p>
+            <div>
                 Approximate feature roadmap
                 <ul>
+                    <li>make it work properly</li>
                     <li>Show DXF to user, and compare original version to offset version</li>
                     <li>Testing on a variety of DXF files and entity types beyond line, circle, arc</li>
                     <li>Explicit error messages if an entity in the DXF file is not supported</li>
                     <li>Allow user to change whether a contour should be offset inwards or outwards</li>
                 </ul>
-            </p>
+            </div>
         </div>
     );
 };

@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FC, ReactElement, useState } from "react";
-import "./dxf-editor.scss";
+import styles from "./dxf-editor.module.scss";
 import { DxfDisplayArea } from "../dxf-display-area/dxf-display-area";
 
 interface FilePickerProps {
@@ -34,7 +34,7 @@ export const DxfEditor: FC = (): ReactElement => {
 
     return (
         <>
-            <div className="selector-pane">
+            <div className={styles.selector_pane}>
                 <FilePicker onNewFile={setFile}></FilePicker>
             </div>
             {file ? <DxfDisplayArea fileBuffer={file} /> : <div>No File Selected</div>}
