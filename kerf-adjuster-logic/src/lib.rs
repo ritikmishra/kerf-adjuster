@@ -81,9 +81,3 @@ pub fn offset_drawing(drawing_bytes: &[u8], offset_amount: f64) -> Vec<u8> {
     new_drawing.save(&mut ret).unwrap();
     return ret;
 }
-
-#[wasm_bindgen]
-pub fn multiply_nums(a: f64, b: f64) -> f64 {
-    console_error_panic_hook::set_once();
-    return a * b;
-}
